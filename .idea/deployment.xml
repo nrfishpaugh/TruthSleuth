@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="TEC3414" uploadOnCheckin="c7b93503-0a4a-40b3-a514-932405689c65" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="TEC3414">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/secure" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myUploadOnCheckinName" value="TEC3414" />
+  </component>
+</project>
