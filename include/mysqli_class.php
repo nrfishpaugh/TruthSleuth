@@ -99,14 +99,20 @@ class mysqli_class extends mysqli
     public function session_update(){
         // destroy session if it's last activity was over 30 minutes ago
         if((isset($_SESSION[PREFIX . '_last_activity'])) && (time() - $_SESSION[PREFIX . '_last_activity'] > 1800)){
-            session_unset();
-            session_destroy();
+            $this->session_delete();
             return 0;
         }
         else{
             $_SESSION[PREFIX . '_last_activity'] = time();
             return 1;
         }
+    }
+
+    public function session_delete(){
+        session_start();
+        $_SESSION = array();
+        session_unset();
+        session_destroy();
     }
 
     // Google Fact Check API connection point

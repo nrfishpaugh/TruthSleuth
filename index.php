@@ -25,8 +25,18 @@ $page_name = "The AI Fact Checking Tool";
     <header>
         <h2 class="title"><?php echo $app_name; ?></h2>
         <ul>
-            <li><a href="login.php">Log In</a></li>
-            <li><a href="signup.php">Sign Up</a></li>
+            <?php if(isset($_SESSION[PREFIX . '_username'])){
+                ?>
+                <li><a href="logout.php">Log Out</a></li>
+            <?php
+            }
+            else{
+                ?>
+                <li><a href="login.php">Log In</a></li>
+                <li><a href="signup.php">Sign Up</a></li>
+            <?php
+            }?>
+
         </ul>
     </header>
 
