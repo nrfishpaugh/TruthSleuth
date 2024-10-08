@@ -38,7 +38,7 @@ class mysqli_class extends mysqli
 
             if($x['email'] == $email && password_verify($pass, $x['password'])){
                 try{
-                    $this -> logins_insert($x['id']);
+                    $this -> login_insert($x['id']);
                     return array(1, $x);
                 }catch (mysqli_sql_exception $e){
                     $this->login_remove($x['id']);
@@ -121,7 +121,25 @@ class mysqli_class extends mysqli
 
     // Add new user to users DB
     public function add_user($email, $pass){
+        $pass_hash = password_hash($pass, PASSWORD_DEFAULT);
+        $query = "INSERT INTO users (email, password) VALUES (?, ?)";
 
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("ss", $email, $pass_hash);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+                $last_id = 0;
+            }
+            $last_id = $this->insert_id;
+
+            $stmt->close();
+        }//END PREPARE
+        else {
+            trigger_error($this->error, E_USER_WARNING);
+            $last_id = 0;
+        }
+
+        return $last_id;
     }
 
     // Remove user from users DB
@@ -132,5 +150,43 @@ class mysqli_class extends mysqli
     // Grab results from
     public function fill_content($arr){
 
+    }
+
+    // check if signup email already exists in users table,
+    // returns amount of emails that match
+    public function user_field_check($field, $column){
+        $query = "SELECT email FROM users WHERE " . $column . " = ?";
+
+        if ($stmt = parent::prepare($query)) {
+            $stmt->bind_param("s", $field);
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            if (!$stmt->execute()) {
+                trigger_error($this->error, E_USER_WARNING);
+            }
+            $meta = $stmt->result_metadata();
+            while ($field = $meta->fetch_field()) {
+                $parameters[] = &$row[$field->name];
+            }
+            call_user_func_array(array($stmt, 'bind_result'), $parameters);
+
+            while ($stmt->fetch()) {
+                $x = array();
+                foreach ($row as $key => $val) {
+                    $x[$key] = $val;
+                }
+                $results[] = $x;
+            }
+            /*
+            $result = $stmt->num_rows;
+            $exists = (bool)$result;
+            $stmt->close();
+            */
+        } else {
+            trigger_error($this->error, E_USER_WARNING);
+        }
+
+        return (bool)count($results);
     }
 }

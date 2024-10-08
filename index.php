@@ -1,7 +1,7 @@
 <?php
 include "include/config.inc";
 
-// set this page as
+// set this page for later
 $_SESSION[PREFIX . "_ppage"] = $_SERVER['REQUEST_URI'];
 // redirect to login page if session is expired
 if(!($mysqli->session_update())){
@@ -21,7 +21,7 @@ $page_name = "The AI Fact Checking Tool";
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="response-body">
     <header>
         <h2 class="title"><?php echo $app_name; ?></h2>
         <ul>
@@ -47,3 +47,4 @@ $page_name = "The AI Fact Checking Tool";
         </div>
     </div>
 </body>
+</html>
