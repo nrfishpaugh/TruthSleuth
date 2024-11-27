@@ -115,14 +115,62 @@ class mysqli_class extends mysqli
         session_destroy();
     }
 
-    // Google Fact Check API connection point
-    public function gfac_api_conn(){
+    // SerpAPI Connection point
+    public function serpapi($search){
+        require "../private/dbconf_truth.php";
+        $base = "https://www.serpapi.com/search.json";
+        $addon = "?engine=google&q=";
+        // since we have such a low monthly search limit, need to stop bad parameters from getting through
+        /*
+        if(!is_null($search)){
+            $new = $base . $addon . urlencode($search);
+            if(!filter_var($new, FILTER_VALIDATE_URL)){
+                return null;
+            }
+        } else {
+            return null;
+        }
+        */
 
-    }
+        $cin = curl_init();
+        curl_setopt($cin, CURLOPT_URL, $base);
+        curl_setopt($cin, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($cin, CURLOPT_FOLLOWLOCATION, true);
+        $fields = array(
+            'api_key' => SerpAPI,
+            'engine' => 'google',
+            'q' => $search,
+            'location' => 'Chicago, Illinois, United States',
+            'google_domain' => 'google.com',
+            'gl' => 'us',
+            'hl' => 'en'
+        );
+        $query = http_build_query($fields);
+        curl_setopt($cin, CURLOPT_URL, $base . "?" . $query);
+        $response = curl_exec($cin);
 
-    // Google Search API connection point
-    public function gsearch_api_conn(){
+        if(curl_errno($cin)){
+            echo 'Request error: ' . curl_error($cin);
+        }
 
+        curl_close($cin);
+
+        return json_decode($response, true);
+        /*
+        curl_setopt($cin, CURLOPT_HEADER, [
+            'Accept: application/json',
+            'Authorization: ' . getenv('DATA_API_KEY',
+                'X-GitHub-Api-Version: 2022-11-28')
+        ]);
+        curl_setopt($cin, CURLOPT_USERAGENT, 'nrfishpaugh');
+        curl_setopt($cin, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cin, CURLOPT_ACCEPT_ENCODING, 'gzip, deflate, br');
+
+        $data = curl_exec($cin);
+        $html = curl_getinfo($cin, CURLINFO_HTTP_CODE);
+        curl_close($cin);
+        return json_decode($data, 1);
+        */
     }
 
     // Add new user to users DB

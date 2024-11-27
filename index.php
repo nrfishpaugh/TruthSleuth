@@ -9,6 +9,17 @@ if(!($mysqli->session_update())){
     exit;
 }
 
+$p = "This box will fill with results when the Submit button is pressed.";
+
+if($_POST['response'] != "" && isset($_POST['sub_response'])){
+    $p = $mysqli->serpapi($_POST['response']);
+    if(isset($p['answer_box']['snippet_highlighted_words'][0])){
+        $p = $p['answer_box']['snippet_highlighted_words'][0];
+    } else {
+        $p = $p['organic_results'][0]['snippet_highlighted_words'][0];
+    }
+}
+
 $page_name = "The AI Fact Checking Tool";
 ?>
 <!DOCTYPE html>
@@ -43,15 +54,15 @@ $page_name = "The AI Fact Checking Tool";
     <div class="main-panel">
         <div class="container">
             <div class="row">
-                <form id="form-response" name="form-response" action="" method="post" class="full-width">
-                    <label for="response">Insert AI response here</label><textarea id="response" name="ta_response" placeholder="Enter AI Response..." rows="12"></textarea>
-                    <button type="submit">Submit</button>
+                <form id="form-response" name="form-response" action="" method="POST" class="full-width">
+                    <label for="response">Insert AI response here</label><textarea id="response" name="response" placeholder="Enter AI Response..." rows="12"></textarea>
+                    <button id="sub_response" name="sub_response" type="submit">Submit</button>
                 </form>
             </div>
 
             <div class="row center">
                 <div class="results full-width min-400-height center">
-                    <p class="low-opacity">This box will fill with results when the Submit button is pressed.</p>
+                    <p class="low-opacity"><?php print_r($p); ?></p>
                 </div>
             </div>
         </div>
